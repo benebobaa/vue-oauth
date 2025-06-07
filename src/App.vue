@@ -1,85 +1,39 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <router-view />
+  <ToastNotification
+    :message="toast.message"
+    :type="toast.type"
+    :duration="toast.duration"
+    :key="toast._key" <!-- Force re-render/re-watch in ToastNotification -->
+    ref="toastNotificationInstance"
+  />
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
+<script setup>
+import { onMounted, ref } from 'vue'; // Removed watch as ToastNotification handles its own visibility via prop watch
+import { useAuthStore } from './stores/auth';
+import ToastNotification from './components/common/ToastNotification.vue'; // Adjust path if needed
+import { useToast } from './composables/useToast'; // Adjust path if needed
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
+const authStore = useAuthStore();
+const { toastState: toast } = useToast(); // Get the reactive state
+const toastNotificationInstance = ref(null); // Ref for the component instance, if direct calls needed
 
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
+onMounted(() => {
+  authStore.checkAuthStatus();
+});
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
+// The ToastNotification component itself now watches its `message` prop.
+// When `toast._key` changes, or `toast.message` changes, the props passed to
+// ToastNotification will update. The watch inside ToastNotification
+// for `props.message` should then trigger its internal `showToast` method.
+// So, direct watching here and calling `toastNotificationInstance.value.showToast()`
+// might be redundant if ToastNotification's internal logic is robust.
+// Let's rely on ToastNotification's internal watch for now.
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
+</script>
 
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
+<style>
+/* Global styles can be added here or in main.css */
+/* Ensure main.css (with Tailwind) is imported in main.js */
 </style>
