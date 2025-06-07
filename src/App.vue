@@ -4,9 +4,10 @@
     :message="toast.message"
     :type="toast.type"
     :duration="toast.duration"
-    :key="toast._key" <!-- Force re-render/re-watch in ToastNotification -->
+    :key="toast._key"
     ref="toastNotificationInstance"
   />
+  <!-- Comment moved outside: Force re-render/re-watch in ToastNotification via :key -->
 </template>
 
 <script setup>
