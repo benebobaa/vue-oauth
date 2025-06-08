@@ -116,6 +116,63 @@ export const useAuthStore = defineStore('auth', {
       // If fetchUser fails (e.g. token is invalid and API returns 401),
       // the Axios interceptor in api.js should catch this and call logout(),
       // which will clear the token and redirect to login.
+    },
+
+    // OAuth Actions
+    initiateGoogleLogin() {
+      authService.redirectToGoogleLogin();
+    },
+
+    async loginWithGoogle(code) {
+      const { showToast } = useToast();
+      try {
+        const response = await authService.handleGoogleCallback(code);
+        if (response.data && response.data.success && response.data.data.token) {
+          this.setToken(response.data.data.token);
+          this.setUser(response.data.data.user);
+          showToast('Google login successful!', 'success');
+          await router.push({ name: 'Dashboard' });
+          return true;
+        }
+        const apiErrorMessage = response.data?.message || 'Google login failed: Invalid response from server.';
+        throw new Error(apiErrorMessage);
+      } catch (error) {
+        console.error('Google login error:', error);
+        const errorMessage = error.response?.data?.message ||
+                           (error.response?.data?.errors ? error.response.data.errors.join(', ') : null) ||
+                           error.message ||
+                           'An unexpected error occurred during Google login.';
+        showToast(errorMessage, 'error');
+        throw new Error(errorMessage);
+      }
+    },
+
+    initiateGitHubLogin() {
+      authService.redirectToGitHubLogin();
+    },
+
+    async loginWithGitHub(code) {
+      const { showToast } = useToast();
+      try {
+        const response = await authService.handleGitHubCallback(code);
+        if (response.data && response.data.success && response.data.data.token) {
+          this.setToken(response.data.data.token);
+          this.setUser(response.data.data.user);
+          showToast('GitHub login successful!', 'success');
+          await router.push({ name: 'Dashboard' });
+          return true;
+        }
+        const apiErrorMessage = response.data?.message || 'GitHub login failed: Invalid response from server.';
+        throw new Error(apiErrorMessage);
+      } catch (error) {
+        console.error('GitHub login error:', error);
+        const errorMessage = error.response?.data?.message ||
+                           (error.response?.data?.errors ? error.response.data.errors.join(', ') : null) ||
+                           error.message ||
+                           'An unexpected error occurred during GitHub login.';
+        showToast(errorMessage, 'error');
+        throw new Error(errorMessage);
+      }
     }
   },
 });

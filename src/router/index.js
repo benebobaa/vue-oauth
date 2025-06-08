@@ -3,6 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import DashboardView from '../views/DashboardView.vue';
+import GoogleCallbackView from '../views/GoogleCallbackView.vue'; // Will be created
+import GitHubCallbackView from '../views/GitHubCallbackView.vue'; // Will be created
 import AuthLayout from '../components/layout/AuthLayout.vue';
 import DefaultLayout from '../components/layout/DefaultLayout.vue';
 import { useAuthStore } from '../stores/auth';
@@ -13,7 +15,9 @@ const routes = [
     component: AuthLayout,
     children: [
       { path: 'login', name: 'Login', component: LoginView },
-      { path: 'register', name: 'Register', component: RegisterView }
+      { path: 'register', name: 'Register', component: RegisterView },
+      { path: 'google/callback', name: 'GoogleCallback', component: GoogleCallbackView },
+      { path: 'github/callback', name: 'GitHubCallback', component: GitHubCallbackView }
     ],
     // Redirect /auth to /auth/login if no sub-route is specified
     redirect: '/auth/login',

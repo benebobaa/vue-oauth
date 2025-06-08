@@ -105,11 +105,29 @@ const handleLogin = async () => {
   }
 };
 
-const handleOAuthLogin = (provider) => {
+const handleOAuthLogin = async (provider) => {
+  isLoading.value = true;
   errorMessage.value = '';
-  console.log(`Attempting OAuth with ${provider}`);
-  errorMessage.value = `OAuth with ${provider} is not implemented yet.`;
-  // authStore.initiateOAuth(provider); // This action would need to be created
+  try {
+    if (provider === 'google') {
+      await authStore.initiateGoogleLogin();
+      // The browser will redirect, so further code here might not execute
+      // or will only execute if the redirection is blocked or fails.
+    } else if (provider === 'github') {
+      await authStore.initiateGitHubLogin();
+      // Similar to Google, redirection is expected.
+    } else {
+      throw new Error('Unsupported OAuth provider.');
+    }
+    // If redirection occurs, isLoading might not be set to false here.
+    // This is generally fine as the page navigates away.
+  } catch (error) {
+    console.error(`OAuth login error with ${provider}:`, error);
+    errorMessage.value = error.message || `Failed to initiate OAuth with ${provider}.`;
+    isLoading.value = false; // Ensure loading is false on error
+  }
+  // No finally block to set isLoading to false, as successful redirection means this component instance is destroyed.
+  // If the initiation itself fails and throws, catch block handles isLoading.
 };
 </script>
 
