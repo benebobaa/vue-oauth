@@ -15,7 +15,7 @@ export const getUserProfile = () => {
 }
 
 export const redirectToGoogleLogin = () => {
-  window.location.href = 'http://localhost:8080/api/auth/google/login'
+  window.location.href = 'http://localhost:8089/api/auth/google/login'
 }
 
 export const handleGoogleCallback = (code) => {
@@ -23,7 +23,7 @@ export const handleGoogleCallback = (code) => {
 }
 
 export const redirectToGitHubLogin = () => {
-  window.location.href = 'http://localhost:8080/api/auth/github/login'
+  window.location.href = 'http://localhost:8089/api/auth/github/login'
 }
 
 export const handleGitHubCallback = (code) => {
