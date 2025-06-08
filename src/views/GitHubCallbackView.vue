@@ -9,36 +9,36 @@
 </template>
 
 <script setup>
-import { onMounted }_from_ 'vue';
-import { useRoute, useRouter }_from_ 'vue-router';
-import { useAuthStore }_from_ '@/stores/auth';
-import { useToast }_from_ '@/composables/useToast'; // For potential error messages
+import { onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { useToast } from '@/composables/useToast'
 
-const route = useRoute();
-const router = useRouter();
-const authStore = useAuthStore();
-const { showToast }_from_ useToast();
+const route = useRoute()
+const router = useRouter()
+const authStore = useAuthStore()
+const { showToast } = useToast()
 
 onMounted(async () => {
-  const { code, state } = route.query; // Assuming 'state' might be used
+  const { code, state } = route.query // Assuming 'state' might be used
 
   if (code) {
     try {
       // The loginWithGitHub action is expected to handle redirection on success
       // and throw an error on failure, which will be caught here.
-      await authStore.loginWithGitHub(code, state); // Pass state if it's part of your OAuth flow
+      await authStore.loginWithGitHub(code, state) // Pass state if it's part of your OAuth flow
       // If loginWithGitHub successfully redirects, lines below this won't execute.
     } catch (error) {
-      console.error('GitHub login callback error:', error);
-      showToast(error.message || 'Failed to complete GitHub login. Please try again.', 'error');
-      router.push({ name: 'Login' }); // Redirect to login on error
+      console.error('GitHub login callback error:', error)
+      showToast(error.message || 'Failed to complete GitHub login. Please try again.', 'error')
+      router.push({ name: 'Login' }) // Redirect to login on error
     }
   } else {
-    console.error('GitHub login callback: No authorization code found.');
-    showToast('GitHub login failed: Authorization code not provided.', 'error');
-    router.push({ name: 'Login' }); // Redirect to login if no code
+    console.error('GitHub login callback: No authorization code found.')
+    showToast('GitHub login failed: Authorization code not provided.', 'error')
+    router.push({ name: 'Login' }) // Redirect to login if no code
   }
-});
+})
 </script>
 
 <style scoped>
