@@ -1,5 +1,7 @@
 import apiClient from './api' // Assuming api.js exports the configured axios instance
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8089';
+
 export const registerUser = (userData) => {
   // userData: { email, password, password_confirmation }
   return apiClient.post('/api/register', userData)
@@ -15,7 +17,7 @@ export const getUserProfile = () => {
 }
 
 export const redirectToGoogleLogin = () => {
-  window.location.href = 'http://localhost:8089/api/auth/google/login'
+  window.location.href = `${API_BASE_URL}/api/auth/google/login`
 }
 
 export const handleGoogleCallback = (code) => {
@@ -23,7 +25,7 @@ export const handleGoogleCallback = (code) => {
 }
 
 export const redirectToGitHubLogin = () => {
-  window.location.href = 'http://localhost:8089/api/auth/github/login'
+  window.location.href = `${API_BASE_URL}/api/auth/github/login`
 }
 
 export const handleGitHubCallback = (code) => {
