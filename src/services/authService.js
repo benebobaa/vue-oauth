@@ -14,6 +14,18 @@ export const getUserProfile = () => {
   return apiClient.get('/api/users/profile')
 }
 
-// OAuth related functions can be added later
-// export const redirectToOAuthProvider = (provider) => { ... }
-// export const handleOAuthLoginCallback = (provider, code, state) => { ... }
+export const redirectToGoogleLogin = () => {
+  window.location.href = 'http://localhost:8080/api/auth/google/login'
+}
+
+export const handleGoogleCallback = (code) => {
+  return apiClient.get(`/api/auth/google/callback?code=${code}`)
+}
+
+export const redirectToGitHubLogin = () => {
+  window.location.href = 'http://localhost:8080/api/auth/github/login'
+}
+
+export const handleGitHubCallback = (code) => {
+  return apiClient.get(`/api/auth/github/callback?code=${code}`)
+}
